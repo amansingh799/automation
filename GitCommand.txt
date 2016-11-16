@@ -1,0 +1,107 @@
+
+
+############################################################################################################################
+                                      git workflows you can followPage History
+############################################################################################################################
+
+You have cloned the remote repo and are now ready to start working. You are on branch 'develop'. You can see it if you do "git status" in your local git repo folder.
+
+$ pwd
+/Users/vkulkarni/dev/qbo-ui
+$ git status
+# On branch develop
+nothing to commit (working directory clean)
+Here are a couple of git workflows that you can follow when working on your code/feature:
+You can choose either of the workflows below depending on the amount of changes you are planning to make. I mostly use the first workflow unless the change is very trivial, isolated and quick.
+
+1. Work on a separate local branch.
+Creating a branch in git is cheap and easy. Working on a local branch allows you to keep the main 'develop' branch clean. Branches allow you to work on multiple things at the same time. It makes sense to work on a branch if your have a fairly large amount of changes to do. For e.g., if I am working on a feature and I have been assigned to fix a bug that also affects the same file. Having the 'develop' clean, I can just create a new branch where I will fix that bug. Then I can go back to my feature branch and continue my work there.
+
+Here are the steps you can follow:
+
+Before starting work, get the latest code
+
+$ git pull --rebase
+The "--rebase" option in "git pull --rebase" will put all your committed (but not pushed) changes on top of all other changes pulled from remote. This is necessary since it won't make a frivolous merge-commit check in.
+
+Create and switch to the new branch
+
+$ git checkout -b myNewFeatureBranch
+This will create and switch you to the new branch. It won't change your working directory. But any changes you commit will be tied to this branch. Working on a branch is similar to creating a new change list, but much more powerful. You can have different changes made to the same file as long as they are on different branches.
+
+Now do your work on the branch. "git status" command will give you the current branch name and any changed/staged files. Commit your changes in the branch itself. "git log" will show you the changes committed to the branch
+
+$ git status
+# On branch myNewFeatureBranch
+nothing to commit (working directory clean)
+$ git add .
+$ git commit
+Once you finished your work and are ready to push your changes:
+
+Switch to 'develop' and get the latest code from remote.
+
+$ git checkout develop
+$ git pull
+There is no "--rebase" here assuming you did not commit anything in 'develop'. If you did commit something to 'develop', then use "--rebase".
+
+Switch back to your branch and rebase the branch to develop
+
+$ git checkout myNewFeatureBranch
+$ git rebase develop
+The "rebase develop" will bring the latest commit details from 'develop' to your branch and put your commits in the branch on top of all other commits on develop.
+
+Now switch back to develop and merge the commits from your branch to 'develop'
+
+$ git checkout develop
+$ git merge myNewFeatureBranch
+This will bring the commits from the branch to 'develop'. Since you had done 'rebase develop', your commits from branch will be on the top of other commits on develop. If you do "git log", you will see those commits that are merged from the branch. At this point, if there is any conflict, then git suspends the merge and you will have to resolve the conflicts to continue.
+
+Push your changes to remote.
+
+$ git push
+This will push all your commits from 'develop' to the remote repo.
+
+2. Work on 'develop'
+It may not make sense to create and work on branches all the time. For small/simple/quick changes, you can just do them on the 'develop'. I make the changes on 'develop' if the change is too trivial, isolated and quick. For e.g., changing an nls property or a simple css update to change the font. This reduces the number of steps you need to follow before pushing your changes to remote.
+
+Here are the steps you can follow:
+
+Before starting work, get the latest code
+
+$ git pull --rebase
+The "--rebase" option in "git pull --rebase" will put all your committed (but not pushed) changes on top of all other changes pulled from remote. This is necessary since it won't make a frivolous merge-commit check in.
+
+Now do your work on the 'develop'. "git status" command will give you the current status of any changed/staged files on 'develop'. Commit your changes. "git log" will show you the changes committed to the branch
+
+$ git status
+# On branch develop
+nothing to commit (working directory clean)
+$ git add .
+$ git commit
+Once you finished your work and are ready to push your changes, get the latest code from remote.
+
+$ git pull --rebase
+The "--rebase" is very important in this case since you have committed changes. Not doing this will create a frivolous merge-commit.
+
+Push your changes to remote.
+
+$ git push
+This will push all your commits from 'develop' to the remote repo.
+
+3. Use git flow
+OK, this is really 1a., a variation of option 1. But please also consider git flow. It is a widely adopted way to ALWAYS work on your own branch. There is a set of very cool command line tools that come with it so you type less when you create, merge and destroy branches. There is also good support for git flow in the two widely used UI tools: SmartGit and SourceTree.
+
+Here are some resources to get you started on git flow:
+
+ (1) https://github.com/nvie/gitflow --> main page for git-flow
+
+(2) http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/ --> quick one-pager
+
+(3) http://vimeo.com/37408017 --> Video, about 23 minutes
+
+(4) http://blog.sourcetreeapp.com/2012/08/01/smart-branching-with-sourcetree-and-git-flow/ --> SourceTree support for git-flow.
+
+(5) http://danielkummer.github.io/git-flow-cheatsheet/ --> Very good cheat-sheet link, please read after you install.
+
+4. Gitlab merge request workflows
+We use the gitlab merge request process for some scenarios. These include the code review for medium/large features and making changes to release branches. The following page provides details about the two scenarios and relevant instructions: Gitlab merge request workflows
